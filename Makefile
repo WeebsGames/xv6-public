@@ -228,11 +228,10 @@ bootskel.img: bootskel.S
 	$(OBJCOPY) -O binary bootskellinked.o bootskel.img
 
 bootsplash.img: bootsplash.S splashmain.c
-	$(CC) -E bootsplash.S -o bootsplash.pre
-	$(AS) --32 bootsplash.pre -o bootsplash.o
-	$(CC) -m32 -fno-builtin -fno-asynchronous-unwind-tables -fno-unwind-tables -c splashmain.c -o splashmain.o
-	$(LD) -m elf_i386 -Ttext=0x7c00 -e start bootsplash.o splashmain.o -o bootsplashlinked.o -N
-	$(OBJCOPY) -O binary bootsplashlinked.o bootsplash.img
-#	./sign.pl bootsplash.img   
+	$(CC) -fno-builtin -fno-pic -m32 -nostdinc -c bootsplash.S -o bootsplash.o
+	$(CC) -fno-builtin -fno-pic -m32 -O -nostdinc -c splashmain.c -o splashmain.o
+	$(LD) -m elf_i386 -nostdlib -n -N -e start -Ttext 0x7C00 -o bootsplashtmp.o bootsplash.o splashmain.o
+	$(OBJCOPY) -S -O binary -j .text bootsplashtmp.o bootsplash.img
+#    ./sign.pl bootsplash.img
 
 .PHONY: dist-test dist clean
