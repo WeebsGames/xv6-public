@@ -232,6 +232,6 @@ bootsplash.img: bootsplash.S splashmain.c
 	$(CC) -fno-builtin -fno-pic -m32 -O -nostdinc -c splashmain.c -o splashmain.o
 	$(LD) -m elf_i386 -nostdlib -n -N -e start -Ttext 0x7C00 -o bootsplashtmp.o bootsplash.o splashmain.o
 	$(OBJCOPY) -S -O binary -j .text bootsplashtmp.o bootsplash.img
-#    ./sign.pl bootsplash.img
+	./sign.pl bootsplash.img
 
 .PHONY: dist-test dist clean

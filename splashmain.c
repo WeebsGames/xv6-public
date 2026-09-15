@@ -1,18 +1,13 @@
 #include"types.h"
 #include"x86.h"
 
-// void splashmain() {
-
-//     // REPLACE THIS INFINITE LOOP WITH YOUR CODE
-    
-//     while(1);
-// }
-
 void
 splashmain(void)
 {
-    volatile unsigned short *video = (volatile unsigned short *)0xB8000;
-    video[0] = 0x0F48;  // H
+    volatile unsigned char *video = (volatile unsigned char *)0xA0000;
+    for(int i = 0; i < 320; i+=2){
+        video[i + (320 * i)] = 0x0f;  // Set each pixel to a default color (black background, white foreground)
+    }
     while (1)
         ;
 }

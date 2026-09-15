@@ -9,9 +9,24 @@ start:
 
 
 // YOUR CODE GOES HERE
+  mov $hello, %si
+  
+  print: //prints hello
+    movb (%si), %al
+    movb $0x0e, %ah
+    testb %al, %al
+    jz done
+    int $0x10
+    inc %si
+    jmp print
 
+  done:
 
-
+  movb $0x00, %ah //wait for keystroke
+  int $0x16
+  movb $0x00, %ah 
+  movb $0x13, %al //set video mode to 320x200 256 color graphics (MCGA,VGA)
+  int $0x10
 
 # Change to 32-bit protected mode so we can run C code
 cli
@@ -34,7 +49,7 @@ call splashmain
 loop:
     jmp loop
 
-hello: .string "xv6 @ UIC rocks!"
+hello: .string "Welcome to xv6@UIC. Press any key to continue"
 
 # Bootstrap GDT
 .p2align 2                                # force 4 byte alignment
