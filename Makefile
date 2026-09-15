@@ -56,8 +56,10 @@ bootblock: bootasm.S bootmain.c
 	$(LD) -m elf_i386 -nostdlib -n -N -e start -Ttext 0x7C00 -o bootblocktmp.o bootasm.o bootmain.o
 	$(OBJDUMP) -S bootblocktmp.o > bootblock.asm
 	$(OBJCOPY) -S -O binary -j .text bootblocktmp.o bootblock
-	./sign.pl bootblock
-
+#wsl
+	perl sign.pl bootblock
+#linux
+# 	./sign.pl bootblock
 entryother: entryother.S
 	$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c entryother.S
 	$(LD) $(LDFLAGS) -n -N -e start -Ttext 0x7000 -o entryothertmp.o entryother.o
@@ -232,6 +234,8 @@ bootsplash.img: bootsplash.S splashmain.c
 	$(CC) -fno-builtin -fno-pic -m32 -O -nostdinc -c splashmain.c -o splashmain.o
 	$(LD) -m elf_i386 -nostdlib -n -N -e start -Ttext 0x7C00 -o bootsplashtmp.o bootsplash.o splashmain.o
 	$(OBJCOPY) -S -O binary -j .text bootsplashtmp.o bootsplash.img
-	./sign.pl bootsplash.img
-
+#wsl
+	perl sign.pl bootsplash.img
+#linux
+# 	./sign.pl bootsplash.img
 .PHONY: dist-test dist clean
