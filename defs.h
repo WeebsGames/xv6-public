@@ -28,7 +28,6 @@ void            cprintf(char*, ...);
 void            consoleintr(int(*)(void));
 int             consoleioctl(struct file *,int,int);
 void            panic(char*) __attribute__((noreturn));
-extern int      color;
 
 // exec.c
 int             exec(char*, char**);

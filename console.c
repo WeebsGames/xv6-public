@@ -151,7 +151,7 @@ panic(char *s)
 static ushort *crt = (ushort*)P2V(0xb8000);  // CGA memory
 
   static void
-cgaputc(int c)
+cgaputc(int c, int foreground)
 {
   int pos;
 
@@ -166,7 +166,7 @@ cgaputc(int c)
   else if (c == BACKSPACE) {
     if (pos > 0) --pos;
   } else
-    crt[pos++] = (c&0xff) | 0x0700;  // gray on black
+    crt[pos++] = (c&0xff) | ((foreground & 0x0f) << 8);  // gray on black
 
   if ((pos/80) >= 24){  // Scroll up.
     memmove(crt, crt+80, sizeof(crt[0])*23*80);
@@ -194,7 +194,7 @@ consputc(int c)
     uartputc('\b'); uartputc(' '); uartputc('\b');
   } else
     uartputc(c);
-  cgaputc(c);
+  cgaputc(c, 0x07);  // gray on black
 }
 
 #define INPUT_BUF 128
@@ -310,10 +310,14 @@ int
 consolewrite(struct file *f, char *buf, int n)
 {
   int i;
+  int foreground = console_color;
+  if(f->dev_payload != 0){
+    foreground = (int)(addr_t)(f->dev_payload) - 1;
+  }
 
   acquire(&cons.lock);
   for(i = 0; i < n; i++)
-    consputc(buf[i] & 0xff);
+    consputc(buf[i] & 0xff, foreground);
   release(&cons.lock);
 
   return n;
