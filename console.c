@@ -28,6 +28,8 @@ static struct {
 
 static char digits[] = "0123456789abcdef";
 
+static int console_color = 0x7;
+
   static void
 print_x64(addr_t x)
 {
@@ -288,7 +290,19 @@ consoleread(struct file *f, char *dst, int n)
 int
 consoleioctl(struct file *f, int param, int value)
 {
-  cprintf("Got unknown console ioctl request. %d = %d\n",param,value);
+  // cprintf("Got unknown console ioctl request. %d = %d\n",param,value);
+  switch(param){
+    case 0:
+      f->dev_payload = (void*)(addr_t)(value + 1);
+      return 0;
+    case 1:
+      acquire(&cons.lock);
+      console_color = value;
+      release(&cons.lock);
+      return 0;
+    default:
+      return -1;
+  }
   return -1;
 }
 
