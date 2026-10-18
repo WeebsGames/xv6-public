@@ -7,7 +7,7 @@ struct file {
   struct inode *ip;
   uint off;
 
-  void * dev_payload;
+  void * dev_payload; //use this to store an int that determines the color stored by ioctl
 };
 
 

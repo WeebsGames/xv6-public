@@ -18,6 +18,7 @@
 #include "x86.h"
 
 static void consputc(int);
+static void consputc_color(int, int);
 
 static int panicked = 0;
 
@@ -183,6 +184,12 @@ cgaputc(int c, int foreground)
 
   void
 consputc(int c)
+  {
+    consputc_color(c, 0x07);
+  }
+
+  static void
+  consputc_color(int c, int foreground)
 {
   if (panicked) {
     cli();
@@ -194,7 +201,7 @@ consputc(int c)
     uartputc('\b'); uartputc(' '); uartputc('\b');
   } else
     uartputc(c);
-  cgaputc(c, 0x07);  // gray on black
+  cgaputc(c, foreground);
 }
 
 #define INPUT_BUF 128
@@ -239,7 +246,7 @@ consoleintr(int (*getc)(void))
       if (c != 0 && input.e-input.r < INPUT_BUF) {
         c = (c == '\r') ? '\n' : c;
         input.buf[input.e++ % INPUT_BUF] = c;
-        consputc(c);
+        consputc_color(c, console_color);
         if (c == '\n' || c == C('D') || input.e == input.r+INPUT_BUF) {
           input.w = input.e;
           wakeup(&input.r);
@@ -317,7 +324,7 @@ consolewrite(struct file *f, char *buf, int n)
 
   acquire(&cons.lock);
   for(i = 0; i < n; i++)
-    consputc(buf[i] & 0xff, foreground);
+    consputc_color(buf[i] & 0xff, foreground);
   release(&cons.lock);
 
   return n;
