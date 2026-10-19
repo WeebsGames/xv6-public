@@ -13,11 +13,20 @@ displaywrite(struct file *f, char *buf, int n)
 {
   // TODO: Validate n and f->off, then copy at most the remaining frame bytes
   // to (uchar*)P2V(0xA0000) + f->off. Advance f->off and return bytes copied.
-  
+  int count = n;
+  if(n < 0 || f->off >= VGA_FRAME_BYTES){
+    return -1;
+  }
+  if (VGA_FRAME_BYTES - f->off < n){
+    count = VGA_FRAME_BYTES - f->off;
+  }
+  uchar *frameBuff = (uchar*)P2V(0xA0000);
+  memmove(frameBuff + f->off, buf, count);
+  f->off += count;
   (void)f;
   (void)buf;
   (void)n;
-  return -1;
+  return count;
 }
 static int
 displayioctl(struct file *f, int command, int value)

@@ -382,6 +382,7 @@ void cgaRestorePalette()
 {
   // restore the saved cga palette with vgaSetPalette
   // TODO: Your code here:
+  
 }
 
 void vgaMode13() {

@@ -5,6 +5,8 @@ cat.o: cat.c types.h stat.h user.h
 console.o: console.c types.h defs.h param.h traps.h spinlock.h \
  sleeplock.h fs.h file.h memlayout.h mmu.h proc.h x86.h
 directcat.o: directcat.c types.h stat.h user.h
+display.o: display.c types.h defs.h fs.h spinlock.h sleeplock.h file.h \
+ memlayout.h vga.h
 echo.o: echo.c types.h stat.h user.h
 exec.o: exec.c types.h param.h memlayout.h mmu.h proc.h defs.h x86.h \
  elf.h
