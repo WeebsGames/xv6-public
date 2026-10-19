@@ -82,14 +82,15 @@ fileclose(struct file *f)
 }
 
 int
-fileioctl(struct file *f, int param, int value) {  
-  if(devsw[f->ip->major].ioctl) {
-    devsw[f->ip->major].ioctl(f,param,value);
-  } 
-  else {
+fileioctl(struct file *f, int param, int value) {
+  if(f->type != FD_INODE || f->ip == 0 || f->ip->type != T_DEV)
+    return -1;
+  if(f->ip->major < 0 || f->ip->major >= NDEV ||
+     devsw[f->ip->major].ioctl == 0) {
     cprintf("Got unknown IOCTL for dev=%d, major=%d, minor=%d, %d=%d\n",f->ip->dev,(int)f->ip->major,(int)f->ip->minor,param,value);
     return -1;
   }
+  return devsw[f->ip->major].ioctl(f, param, value);
 }
 
 // Get metadata about file f.
@@ -181,4 +182,3 @@ filewrite(struct file *f, char *addr, int n)
   }
   panic("filewrite");
 }
-

@@ -23,7 +23,7 @@ main(void)
 
 
   if(open("display", O_RDWR) < 0){
-    mknod("display", 2, 1); // the second argument is DISPLAY = 2
+    mknod("display", 2, 1); // DISPLAY major number
     open("display", O_RDWR);
   }
 
