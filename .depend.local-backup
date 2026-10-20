@@ -5,6 +5,7 @@ bootmain.c
 cat.c
 console.c
 directcat.c
+display.c
 echo.c
 exec.c
 file.c
