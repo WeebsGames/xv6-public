@@ -152,8 +152,8 @@ struct segdesc {
 #define PML4XSHIFT      39      // offset of PML4X in a linear address
 #define PXMASK          0X1FF
 
-#define PGROUNDUP(sz)  (((sz)+((addr_t)PGSIZE-1)) & ~((addr_t)(PGSIZE-1)))
-#define PGROUNDDOWN(a) (((a)) & ~((addr_t)(PGSIZE-1)))
+#define PGROUNDUP(sz)  (((sz)+((addr_t)PGSIZE-1)) & ~((addr_t)(PGSIZE-1)))  // round up to the next page boundary
+#define PGROUNDDOWN(a) (((a)) & ~((addr_t)(PGSIZE-1)))                      // round down to the start of the page
 #define PGINDEX(physaddr) (((addr_t)physaddr)/PGSIZE)
 
 // Page table/directory entry flags.
